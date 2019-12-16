@@ -1,0 +1,35 @@
+# .dev extension makes it clear that this file is only used for a dev environment
+# when you run docker build it looks for dockerfile though
+# so you need to use a different command (docker build -f Dockerfile.dev .)
+# -f specifies the file you want to use
+
+# get the base image node (alpine version (strict))
+FROM node:alpine
+
+# set up a working directory
+WORKDIR '/app'
+
+# copy the contents of package.json to the working directory
+COPY package.json .
+
+# run the npm command to install the dependencies
+RUN npm install
+
+# now that dependencies are installed, copy everything else over
+COPY . .
+# don't really need the COPY . . because we are referencing 
+# the files from the local directory rather than the container
+
+# default command 
+CMD ["npm", "run", "start"]
+
+# docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app <img id>
+# -v is for mapping one item to another
+# the first -v tells the container to use /app/node_modules as a placeholder
+# the second -v tells the container to map /app to $(pwd)
+# $(pwd) is the present working directory 
+# anytime the container tries to access something in the X directory
+# it will reach out of the container and access it from the pwd
+
+
+
